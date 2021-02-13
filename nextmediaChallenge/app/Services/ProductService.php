@@ -12,6 +12,23 @@ class ProductService
         return Product::all();
     }
 
+    public function getProducts($filters = [], $sorts = []) 
+    {
+        if ($filters['categorie']) {
+            $products = Category::find($filters['categorie'])->products;
+        }else {
+            $products = Product::query();  
+        }
+
+        if (sizeof($sorts) > 0) {
+            foreach($sorts as $sort => $value ) {
+                $products->orderBy($sort, $value);
+            }
+        }
+
+        return $products->get();
+    }
+
     public function getProduct($id) 
     {
         $product = Product::findOrFail($id);
