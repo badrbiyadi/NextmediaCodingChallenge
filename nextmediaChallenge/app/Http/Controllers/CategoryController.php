@@ -14,6 +14,12 @@ class CategoryController extends Controller
         $this->categoryService = $categoryService;
     }
 
+    public function getAllCategories()
+    {
+        $data = $this->categoryService->getAllCategories();
+        return $data;
+    }
+
     public function createCategory($data)
     {
         $this->categoryService->create($data);
