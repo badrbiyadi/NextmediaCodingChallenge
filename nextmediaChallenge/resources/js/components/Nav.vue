@@ -23,3 +23,7 @@
         name: "Nav" 
     }
 </script>
+
+<style scoped>
+
+</style>

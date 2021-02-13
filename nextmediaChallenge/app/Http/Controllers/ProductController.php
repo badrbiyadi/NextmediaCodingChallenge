@@ -22,4 +22,19 @@ class ProductController extends Controller
     {
         $this->productService->delete($id);
     }
+
+    public function index()
+    {
+        
+    }
+
+    public function store() 
+    {
+        $data = request()->validate([
+            'name' => 'required',
+            'descriptio' => 'required',
+            'price' => 'required',
+        ]);
+    }
+
 }
