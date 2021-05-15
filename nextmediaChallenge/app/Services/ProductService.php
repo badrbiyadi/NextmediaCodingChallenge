@@ -9,7 +9,8 @@ class ProductService
 {
     public function getAllProducts() 
     {
-        return Product::all();
+        $products = Product::query();
+        return $products->get();
     }
 
     public function getProducts($filters = [], $sorts = []) 
@@ -31,43 +32,35 @@ class ProductService
 
     public function getProduct($id) 
     {
-        $product = Product::findOrFail($id);
-        return $product;
+        $product = Product::where('id', $id);
+        if (!$product->exists()) {
+            abort(404);
+        }
+        return $product->get();
     }
 
     public function create($data) 
     {
-        $product = new Product();
-        $product->name = $data['name'];
-        $product->description = $data['description'];
-        $product->price = $data['price'];
-        if (!empty($data['image'])) {
-            $product->image = $data['image'];
-        }
-        $product->save();
+        return Product::create($data);
     }
 
     public function update($id, $data) 
     {
-        $product = Product::findOrFail($id);
-        if ($data['name']) {
-            $product->name = $data['name'];
+        $product = Product::where('id', $id);
+
+        if (!$product->exists()) {
+            abort(404);
         }
-        if ($data['description']) {
-            $product->description = $data['description'];
-        }
-        if ($data['price']) {
-            $product->price = $data['price'];
-        }
-        if ($data['image']) {
-            $product->image = $data['image'];
-        }
-        $product->save();       
+        
+        return $product->update($data);       
     }
 
     public function delete($id) 
     {
-        $product = Product::findOrFail($id);
-        $product->delete();
+        $product = Product::where('id', $id);
+        if (!$product->exists()) {
+            abort(404);
+        }
+        return $product->delete();
     }
 }

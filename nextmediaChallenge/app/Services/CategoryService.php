@@ -8,34 +8,37 @@ class CategoryService
 {
     public function getAllCategories() 
     {
-        return Category::all();
+        $categories = Category::query();
+
+        return $categories->get();
     }
 
     public function getCategory($id) 
     {
-        $category = Category::findOrFail($id);
-        return $category;
+        $category = Category::where('id', $id);
+        return $category->get();
     }
 
     public function create($data) 
     {
-        $category = new Category();
-        $category->name = $data['name'];
-        $category->save();
+        return Category::create($data);
     }
 
     public function update($id, $data) 
     {
-        $category = Category::findOrFail($id);
-        if ($data['name']) {
-            $category->name = $data['name'];
+        $category = Category::where('id', $id);    
+        if(!$category->exists()) {
+            abort(404);
         }
-        $category->save();       
+        return $category->update($data);
     }
 
-    public function delete($id = null, $data = null) 
+    public function delete($id) 
     {
-        $product = Category::findOrFail($id);
-        $product->delete();
+        $category = Category::where('id', $id);
+        if($category->exists()) {
+            abort(404);
+        }
+        return $category->delete();
     }
 }
