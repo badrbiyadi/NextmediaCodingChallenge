@@ -41,4 +41,8 @@ class CategoryService
         }
         return $category->delete();
     }
+    
+    public function checkIfCategoryExists($id) {
+        return Category::where('id', $id)->exists();
+    }
 }
