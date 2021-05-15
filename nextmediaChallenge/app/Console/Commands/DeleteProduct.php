@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Http\Controllers\ProductController;
+use App\Services\ProductService;
+use Exception;
 use Illuminate\Console\Command;
 
 class DeleteProduct extends Command
@@ -27,17 +29,17 @@ class DeleteProduct extends Command
      * @var Controller
      */
 
-    protected $productController;
+    protected $productService;
 
     /**
      * Create a new command instance.
      *
      * @return void
      */
-    public function __construct(ProductController $productController)
+    public function __construct(ProductService $productService)
     {
         parent::__construct();
-        $this->productController = $productController;
+        $this->productService = $productService;
     }
 
     /**
@@ -47,8 +49,13 @@ class DeleteProduct extends Command
      */
     public function handle()
     {
-        $id = $this->ask('What is the id of the product');
-        $this->productController->deleteProduct($id);
-        $this->info('Product deleted');
+        try {
+            $id = $this->ask('What is the id of the product');
+            $this->productService->delete($id);
+            $this->info('Product deleted');
+        }catch (Exception $e) {
+            $this->error('Product was not deleted');
+        }
+        
     }
 }

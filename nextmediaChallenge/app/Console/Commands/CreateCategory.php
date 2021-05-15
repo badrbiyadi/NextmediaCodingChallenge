@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Http\Controllers\CategoryController;
+use App\Services\CategoryService;
 use Exception;
 use Illuminate\Console\Command;
 
@@ -28,17 +29,17 @@ class CreateCategory extends Command
      * @var Controller
      */
 
-    protected $categoryController;
+    protected $categoryService;
 
     /**
      * Create a new command instance.
      *
      * @return void
      */
-    public function __construct(CategoryController $categoryController)
+    public function __construct(CategoryService $categoryService)
     {
         parent::__construct();
-        $this->categoryController = $categoryController;
+        $this->categoryService = $categoryService;
     }
 
     /**
@@ -55,33 +56,28 @@ class CreateCategory extends Command
                 'Is this category has a parent?',
                 ['No', 'Yes'],
             );
-
+            $parentId = null;
             if ($hasParent === 'Yes') {
-                // create the logic that link a 
-                $categories = $this->categoryController->getAllCategories();    
-                $parentChoices = [];
-                foreach($categories as $cat){
-                   $parentChoices[$cat->id] = $cat->name;
+                $categories = $this->categoryService->getAllCategories()->pluck( 'name', 'id');    
+                $this->info('Please choose the number the parent category ');
+                foreach($categories as $index => $category) {
+                    $this->info($index .' ==> ' . $category);
                 }
-             
-                $parentName = $this->choice(
-                    'Please choose the parent of the category',
-                    $parentChoices,
+                $parentInput = $this->anticipate(
+                    '',
+                    $categories,
                 );
-
+                if(is_numeric($parentInput) && $this->categoryService->checkIfCategoryExists($parentInput)) {
+                    $parentId = $parentInput;
+                }
             }
-
-            dd($parentName);
-
             $data = [
                 'name' => $name,
-                'parent' => '',
+                'parent' => $parentId,
             ];
-
-            //$this->categoryController->createCategory($data);
+            $this->categoryService->create($data);
             $this->info('Category created');
         }catch (Exception $e) {
-            dd($e->getMessage());
             $this->error('Category was not created');
         }
     }

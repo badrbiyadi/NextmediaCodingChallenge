@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Http\Controllers\CategoryController;
+use App\Services\CategoryService;
 use Exception;
 use Illuminate\Console\Command;
 
@@ -28,17 +29,17 @@ class DeleteCategory extends Command
      * @var Controller
      */
 
-    protected $categoryController;
+    protected $categoryService;
 
     /**
      * Create a new command instance.
      *
      * @return void
      */
-    public function __construct(CategoryController $categoryController)
+    public function __construct(CategoryService $categoryService)
     {
         parent::__construct();
-        $this->categoryController = $categoryController;
+        $this->categoryService = $categoryService;
     }
 
     /**
@@ -50,7 +51,7 @@ class DeleteCategory extends Command
     {
         try {
             $id = $this->ask('What is the id of the category');
-            $this->categoryController->deleteCategory($id);
+            $this->categoryService->delete($id);
             $this->info('Category deleted');
         } catch (Exception $e) {
             $this->error('Category was not deleted');

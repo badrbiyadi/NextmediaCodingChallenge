@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Http\Controllers\ProductController;
+use App\Services\ProductService;
 use Exception;
 use Illuminate\Console\Command;
 
@@ -28,7 +29,7 @@ class CreateProduct extends Command
      * @var Controller
      */
 
-    protected $productController;
+    protected $productService;
 
 
     /**
@@ -36,10 +37,10 @@ class CreateProduct extends Command
      *
      * @return void
      */
-    public function __construct(ProductController $productController)
+    public function __construct(ProductService $productService)
     {
         parent::__construct();
-        $this->productController = $productController;
+        $this->productService = $productService;
     }
     
     /**
@@ -58,7 +59,7 @@ class CreateProduct extends Command
                 'description' => $description,
                 'price' => $price,
             ];
-            $this->productController->createProduct($data);
+            $this->productService->create($data);
             $this->info('Product created');
         }catch (Exception $e) {
             $this->error('Product was not created');
