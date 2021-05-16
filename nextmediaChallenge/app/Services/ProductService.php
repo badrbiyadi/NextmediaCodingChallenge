@@ -70,7 +70,9 @@ class ProductService
         if (!$product->exists()) {
             abort(404);
         }
+        $product = $product->first();
         return $product->categories()->attach($categories);
+         
     }
 
     public function addImageToProduct($id, $image)
@@ -80,8 +82,9 @@ class ProductService
             abort(404);
         }
 
-        return $product->update([
+        $product->update([
             'image' => $image
         ]);
+        return $product->first();
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\Product as ProductResource;
 use App\Http\Resources\ProductCollection;
+use Intervention\Image\Facades\Image;
 use App\Services\ProductService;
 use Illuminate\Http\Request;
 
@@ -44,9 +45,11 @@ class ProductController extends Controller
         }
 
         if (!empty($data['image'])) {
-
-            $image = null;
-            $this->productService->addImageToProduct($product->id, $image);
+            $image = $data['image'];
+            $ext = $image->getClientOriginalExtension();
+            $destination = 'image/product'.$product->id.'.'.$ext;
+            Image::make($image)->save(storage_path('app/public/'.$destination));
+            $product = $this->productService->addImageToProduct($product->id, '/storage/'.$destination);
         }
         return new ProductResource($product);
     }
