@@ -41,7 +41,7 @@ class ProductService
 
     public function create($data) 
     {
-        return Product::create($data);
+        return $product = Product::create($data);
     }
 
     public function update($id, $data) 
@@ -62,5 +62,26 @@ class ProductService
             abort(404);
         }
         return $product->delete();
+    }
+
+    public function assocProductCategory($id, $categories)
+    {
+        $product = Product::where('id', $id);
+        if (!$product->exists()) {
+            abort(404);
+        }
+        return $product->categories()->attach($categories);
+    }
+
+    public function addImageToProduct($id, $image)
+    {
+        $product = Product::where('id', $id);
+        if (!$product->exists()) {
+            abort(404);
+        }
+
+        return $product->update([
+            'image' => $image
+        ]);
     }
 }
