@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -18,6 +19,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::apiResources([
-    '/product' => 'ProductController',
-]);
+
+Route::get('/products', 'ProductController@getAllProducts');
+Route::post('/product', 'ProductController@store');
+
+Route::get('/categories', 'CategoryController@getAllCategories');

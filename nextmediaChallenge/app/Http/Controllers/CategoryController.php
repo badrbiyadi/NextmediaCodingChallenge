@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CategoryCollection;
 use App\Services\CategoryService;
 use Illuminate\Http\Request;
 
@@ -17,17 +18,17 @@ class CategoryController extends Controller
     public function getAllCategories()
     {
         $data = $this->categoryService->getAllCategories();
-        return $data;
+        return new CategoryCollection($data);
     }
 
     public function createCategory($data)
     {
-        $this->categoryService->create($data);
+        return $this->categoryService->create($data);
     }
 
     public function deleteCategory($id)
     {
-        $this->categoryService->delete($id);
+        return $this->categoryService->delete($id);
     }
     
 }
